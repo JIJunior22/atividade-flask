@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static/css/style2.css">
+
+    <title>Cadastrar</title>
+</head>
+<body>
+<div class="page">
+    <form action="/cadastrar/usuario" method="post" class="cadastrofomr">
+        <h1>Cadastre-se</h1>
+        <label for="usuario"><b>Usuario</b></label>
+        <input type="text" placeholder="Nome de usuario" name="usuario" required autofocus>
+
+        <label for="password"><b>Senha</b></label>
+        <input type="password" placeholder="Escolha uma senha" name="password" required>
+
+        <input type="submit" value="Enviar" class="btn">
+
+        <div class="form-radio">
+            <span><b>Tipo de Usuario</b></span>
+            <div class="radio-inputs">
+                <div class="radio-input">
+                    <input type="radio" name="usertype" id="normal" value="normal" checked required>
+                    <label for="normal"><b>Normal</b></label>
+                </div>
+                <div class="radio-input">
+                    <input type="radio" name="usertype" id="super" value="super" checked required>
+                    <label for="super"><b>Super</b></label>
+
+
+
+                </div>
+                <div class="btn-group">
+
+                    <p>Já possui cadastro?
+                        <button type="button"><a href="/logar">Logar</a></button>
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+
+</body>
+</html>

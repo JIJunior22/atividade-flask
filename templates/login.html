@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style2.css') }}">
+    <title>Construmix</title>
+</head>
+<body>
+<div class="page">
+    <form action="/logar" method="post" class="formLogin">
+        <h1>Login</h1>
+
+
+        <label for="usuario"><b>Usuário</b></label>
+        <input type="text" placeholder="Digite seu usuário" name="usuario" required autofocus>
+
+        <label for="password"><b>Senha</b></label>
+        <input type="password" placeholder="Digite sua senha" name="password" required>
+
+        <div class="button-container">
+            <input type="submit" value="Acessar" class="btn">
+            <input type="button" value="Voltar" class="btn" onclick="window.location.href='/'">
+        </div>
+
+
+
+        <footer>
+            <p>Todos os direitos reservados <b>Construmix</b></p>
+        </footer>
+    </form>
+</div>
+
+<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>
