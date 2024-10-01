@@ -2,15 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style2.css') }}">
+    <link rel="stylesheet" href="../static/css/style2.css">
 
     <title>Gerenciador de Produtos</title>
 </head>
 <body>
 
 
-    <div class="container">
-        <h2><b>Cadastrar Produtos</b></h2>
+<div class="container">
+    <h2><b>Cadastrar Produtos</b></h2>
+    <form action="/cadastroProduto" method="POST">
         <label for="product"><b>Produto</b></label>
         <input type="text" placeholder="Nome do produto" name="nome" required>
 
@@ -18,13 +19,14 @@
         <input type="number" placeholder="Quantidade" name="quantidade" required>
 
         <label for="preco">Preço</label>
-        <input type="number" placeholder="Preço"  name="preco" required>
+        <input type="number" placeholder="Preço" name="preco" required>
 
         <button type="submit" id="btnSalvarProduto" onclick="salvarProduto()">Salvar</button>
 
         <button type="button"><a href="/">Voltar</a></button>
-    </div>
-
+    </form>
+</div>
+<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 
 
 </body>

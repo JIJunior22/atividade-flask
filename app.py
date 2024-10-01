@@ -1,5 +1,4 @@
-from flask import *
-
+from flask import Flask, render_template, request, redirect, url_for, session, make_response
 import dao
 
 app = Flask(__name__)
@@ -7,13 +6,18 @@ app.secret_key = 'secret_key'
 
 
 @app.route('/')
-def hello_world():  # put application's code here
+def hello_world():
     return render_template('cadastrarUser.html')
+
+
+@app.route("/home")
+def home():
+    return render_template('index.html')
 
 
 @app.route('/logar', methods=['POST', 'GET'])
 def fazer_login():
-    if 'GET' == request.method:
+    if request.method == 'GET':
         return render_template('login.html')
     elif request.method == 'POST':
         login = request.form.get('usuario')
@@ -22,12 +26,11 @@ def fazer_login():
         if dao.verificarLogin(login, senha):
             session['userName'] = login
             print("Login realizado!")
-            return render_template('produto.html', user=login)
+            return redirect(url_for('home'))
 
         else:
-
             print("Erro! Login não realizado.")
-            return render_template('login.html')
+            return render_template('login.html', error='Usuário ou senha incorretos.')
 
 
 @app.route("/cadastrar/usuario", methods=['POST'])
@@ -42,29 +45,48 @@ def cadastrar_usuario():
 
     if dao.inserirUsuario(login, senha, tipouser):
         print("Cadastro realizado com sucesso!")
-        return render_template('index.html', sucesso="Cadastro realizado com sucesso!")
+        return redirect(url_for('fazer_login'))
     else:
         print("Erro! Cadastro não realizado.")
         return render_template('cadastrarUser.html', erro="Erro no cadastro, tente novamente")
 
 
-@app.route('/cadastrar/produto', methods=['GET', 'POST'])
-def cadastrar_produto():
-    if request.method == 'GET':
-        return render_template('produto.html')
-    if request.method == 'POST':
-        nome = request.form.get('nome')
-        quantidade = request.form.get('quantidade')
-        preco = request.form.get('preco')
+@app.route('/cadastroProduto', methods=["GET", "POST"])
+def cadastrarProduto():
+    if request.method == "GET":
+        return render_template("cadastroProduto.html")
 
-        dao.inserirUsuario(nome, quantidade, preco)
+    if request.method == "POST":
+        nome = request.form["nome"]
+        qtde = request.form["qtde"]
+        preco = request.form["preco"]
+        loginUser = request.form["loginUser"]
 
-        return f'Produto cadastrado com sucesso! Nome: {nome}, Quantidade: {quantidade}, Preço: {preco}'
+        # Supondo que dao.cadastroProduto insira o produto no banco
+        try:
+            dao.cadastroProduto(nome, qtde, preco, loginUser)
+            # Redireciona para a rota correspondente
+            return redirect(url_for("home"))
+        except Exception as e:
+            print(f"Erro ao cadastrar produto: {e}")
+            return render_template("cadastroProduto.html", error="Erro ao cadastrar o produto. Tente novamente.")
 
 
-@app.route("/cadastrar")
+@app.route("/cadastrarUser")
 def renderizar():
     return render_template('cadastrarUser.html')
+
+
+@app.route("/logout")
+def logout():
+    session.pop('userName', None)
+    return make_response(render_template('login.html'))
+
+
+@app.route("/listar-produtos")
+def listar_produtos():
+    produtos = dao.listarProdutos()
+    return render_template('listar-produtos.html', produtos=produtos)
 
 
 if __name__ == '__main__':

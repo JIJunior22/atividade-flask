@@ -26,29 +26,25 @@ def verificarLogin(nome, senha):
         return False
 
 
-def inserirProduto(nome, login, qtde, preco):
+def inserirProduto(nome, login, qtde, preco, user):
     conexao = conect()
     cur = conexao.cursor()
 
-    try:
+    cur.execute(f"SELECT count(*) FROM Produto WHERE loginUser = '{user}'")
+    recset = cur.fetchall()
 
-        if userTypeValidation(login):
-            cur.execute(
-                "INSERT INTO produtos (nome, loginUser, qtde, preco) VALUES (%s, %s, %s, %s)",
-                (nome, login, qtde, preco)
-            )
-            conexao.commit()
-            print("Produto inserido com sucesso!")
-        else:
-            print("Limite de cadastro de produtos atingido para este usuário.")
+    QtdeProduto = recset[0][0]
 
-    except Exception as e:
-        print(f"Erro ao inserir produto: {e}")
-        conexao.rollback()
-
-    finally:
-        cur.close()
+    if user == "normal" and QtdeProduto >= 3:
+        print("Limite de produtos atingido em usuarios Normais")
         conexao.close()
+        return False
+    else:
+
+        cur.execute(f"INSERT INTO Produto (nome, qtde, preco, loginuser) VALUES ('{nome}', '{qtde}', '{preco}', '{user}')")
+        conexao.commit()
+        conexao.close()
+        return True
 
 
 def inserirUsuario(loginuser, senha, tipouser):
@@ -106,7 +102,7 @@ def userTypeValidation(tipo_user):
         conexao = conect()
         cur = conexao.cursor()
 
-        cur.execute("SELECT COUNT(*) FROM produtos WHERE usuario_id = %s", (tipo_user))
+        cur.execute("SELECT COUNT(*) FROM produtos WHERE loginuser = %s", (tipo_user))
         total_prod = cur.fetchone()[0]
         cur.close()
         conexao.close()
@@ -119,7 +115,7 @@ def userTypeValidation(tipo_user):
         conexao = conect()
         cur = conexao.cursor()
 
-        cur.execute("SELECT COUNT(*) FROM produtos WHERE usuario_id = %s", (tipo_user))
+        cur.execute("SELECT COUNT(*) FROM produtos WHERE loginuser = %s", (tipo_user))
         total_prod = cur.fetchone()[0]
         cur.close()
         conexao.close()
@@ -132,3 +128,14 @@ def userTypeValidation(tipo_user):
 
 def conect():
     return conectar()
+
+
+def listarProdutos():
+    conexao = conect()
+    cur = conexao.cursor()
+
+    cur.execute(f"select * from produtos")
+    result = cur.fetchall()
+
+    cur.close()
+    conexao.close()
