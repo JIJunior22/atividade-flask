@@ -51,25 +51,25 @@ def cadastrar_usuario():
         return render_template('cadastrarUser.html', erro="Erro no cadastro, tente novamente")
 
 
-@app.route('/cadastroProduto', methods=["GET", "POST"])
+@app.route("/cadastroProduto", methods=["GET", "POST"])
 def cadastrarProduto():
     if request.method == "GET":
-        return render_template("cadastroProduto.html")
+        return render_template("produto.html")
 
     if request.method == "POST":
         nome = request.form["nome"]
         qtde = request.form["qtde"]
         preco = request.form["preco"]
-        loginUser = request.form["loginUser"]
+        loginUser = session.get("userName")
 
-        # Supondo que dao.cadastroProduto insira o produto no banco
         try:
-            dao.cadastroProduto(nome, qtde, preco, loginUser)
-            # Redireciona para a rota correspondente
-            return redirect(url_for("home"))
+
+            dao.inserirProduto(nome, qtde, preco, loginUser)
+            print("Produto: " + nome + " cadastrado com sucesso! " + "Usuario: " + loginUser)
+            return redirect(url_for("listar_produtos"))
         except Exception as e:
             print(f"Erro ao cadastrar produto: {e}")
-            return render_template("cadastroProduto.html", error="Erro ao cadastrar o produto. Tente novamente.")
+            return render_template("produto.html", error="Erro ao cadastrar o produto. Tente novamente.")
 
 
 @app.route("/cadastrarUser")
@@ -83,10 +83,20 @@ def logout():
     return make_response(render_template('login.html'))
 
 
-@app.route("/listar-produtos")
+@app.route('/listar-produtos', methods=['GET'])
 def listar_produtos():
-    produtos = dao.listarProdutos()
-    return render_template('listar-produtos.html', produtos=produtos)
+    try:
+        produtos = dao.lista_produtos()
+
+        #verifica se esse caraio é nulo
+        if produtos is None:
+            produtos = []
+
+        return render_template('listar-produtos.html', produtos=produtos)
+    except Exception as e:
+        print(f"Erro ao listar produtos: {e}")
+        return render_template('listar-produtos.html', produtos=[])
+
 
 
 if __name__ == '__main__':

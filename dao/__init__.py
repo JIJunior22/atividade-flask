@@ -26,22 +26,22 @@ def verificarLogin(nome, senha):
         return False
 
 
-def inserirProduto(nome, login, qtde, preco, user):
+def inserirProduto(nome, qtde, preco, user):
     conexao = conect()
     cur = conexao.cursor()
 
-    cur.execute(f"SELECT count(*) FROM Produto WHERE loginUser = '{user}'")
-    recset = cur.fetchall()
+    cur.execute("SELECT count(*) FROM produtos WHERE loginuser = %s", (user,))
+    recset = cur.fetchone()
 
-    QtdeProduto = recset[0][0]
+    QtdeProduto = recset[0]
 
     if user == "normal" and QtdeProduto >= 3:
-        print("Limite de produtos atingido em usuarios Normais")
+        print("Limite de produtos atingido para usuários normais")
         conexao.close()
         return False
     else:
-
-        cur.execute(f"INSERT INTO Produto (nome, qtde, preco, loginuser) VALUES ('{nome}', '{qtde}', '{preco}', '{user}')")
+        cur.execute("INSERT INTO produtos (nome, qtde, preco, loginuser) VALUES (%s, %s, %s, %s)",
+                    (nome, qtde, preco, user))
         conexao.commit()
         conexao.close()
         return True
@@ -130,12 +130,22 @@ def conect():
     return conectar()
 
 
-def listarProdutos():
+def lista_produtos():
     conexao = conect()
     cur = conexao.cursor()
 
-    cur.execute(f"select * from produtos")
-    result = cur.fetchall()
+    try:
+        cur.execute("SELECT nome, qtde, preco FROM produtos")
+        produtos = cur.fetchall()
 
-    cur.close()
-    conexao.close()
+        # Se não houver produtos, retorna uma lista vazia
+        if not produtos:
+            return []
+
+        return produtos
+    except Exception as e:
+        print(f"Erro ao listar produtos: {e}")
+        return []
+    finally:
+        conexao.close()
+

@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../static/css/style2.css">
-
     <title>Gerenciador de Produtos</title>
 </head>
 <body>
-
 
 <div class="container">
     <h2><b>Cadastrar Produtos</b></h2>
@@ -16,18 +14,17 @@
         <input type="text" placeholder="Nome do produto" name="nome" required>
 
         <label for="quantity">Quantidade</label>
-        <input type="number" placeholder="Quantidade" name="quantidade" required>
+        <input type="number" placeholder="Quantidade" name="qtde" required>
 
         <label for="preco">Preço</label>
-        <input type="number" placeholder="Preço" name="preco" required>
+        <input type="number" placeholder="Preço" step="0.01" name="preco" required>
 
-        <button type="submit" id="btnSalvarProduto" onclick="salvarProduto()">Salvar</button>
+        <button type="submit">Salvar</button>
 
         <button type="button"><a href="/">Voltar</a></button>
     </form>
 </div>
 <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
-
 
 </body>
 </html>
